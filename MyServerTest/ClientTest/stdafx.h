@@ -12,16 +12,6 @@
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
-#include <ctime>
 
-#include <string>
-#include <memory>
-#include <functional>
-
-#include <boost/thread/thread.hpp>
-#include <string>
-#include <memory>
-#include <functional>
-#include <boost/bind/bind.hpp>
 
 // TODO: 在此处引用程序需要的其他头文件
