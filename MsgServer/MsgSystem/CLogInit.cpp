@@ -52,7 +52,7 @@ CLogInit::CLogInit()
 	// One can also use lambda expressions to setup filters and formatters
 	logging::add_file_log
 	(
-		"Log/sample.log",
+		"Log/log_%Y-%m-%d_%N.log",
 		keywords::filter = expr::attr< severity_level >("Severity") >= warning,
 		keywords::format = expr::stream
 		<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d, %H:%M:%S.%f")

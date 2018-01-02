@@ -27,6 +27,18 @@
     <ClInclude Include="CLogInit.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CBind.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CHead.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CSubmit.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CRecver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -42,6 +54,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CLogInit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CBind.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CHead.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSubmit.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CRecver.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

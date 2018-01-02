@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "CServer.h"
 #include "CLogInit.h"
+#include "CRecver.h"
 
 CServer::CServer()
 {
-	local_port = 3200;
+	local_port = 8801;
+
 }
 
 
@@ -22,9 +24,9 @@ using boost::asio::ip::tcp;
 // 开启服务器
 void CServer::run()
 {
-	CLogInit CI;
+
 	BOOST_LOG_SEV(CI.slg, normal) << "A normal severity message, will not pass to the file";
-	BOOST_LOG_SEV(CI.slg, warning) << "A warning severity message, will pass to the file";
+	BOOST_LOG_SEV(CI.slg, warning) << "服务器启动：%Y";
 	BOOST_LOG_SEV(CI.slg, error) << "An error severity message, will pass to the file";
 	asio::io_service io_service;
 	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), local_port));
@@ -38,7 +40,7 @@ void CServer::run()
 			acceptor.accept(*socket);
 
 			tg.create_thread(boost::bind(&CServer::DealSockProcess, this, socket));
-
+			BOOST_LOG_SEV(CI.slg, warning) << "客户端连接";
 		}
 		catch (std::exception& e)
 		{
@@ -57,27 +59,11 @@ void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> so
 	{
 		try
 		{
-
+			CRecver cr;
 			//std::string message = to_simple_string(boost::gregorian::day_clock::local_day());
-			std::vector<char> message(128, 0);
 
-			message[0] = 'A';
-			message[1] = 'b';
-			system::error_code ignored_error;
-			int msgL = socket->write_some(asio::buffer(message), ignored_error);
-
-			if (ignored_error == boost::asio::error::eof)
-				break; // Connection closed cleanly by peer.
-			else if (ignored_error)
-				throw boost::system::system_error(ignored_error); // Some other error.
-
-
-			std::cout << "发送长度：" << std::to_string(msgL) << std::endl;
-
-
-
-
-			std::vector<char> buf(128, 0);
+			//接收
+			std::vector<char> buf(1000, 0);
 
 
 			boost::system::error_code error;
@@ -88,14 +74,33 @@ void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> so
 			else if (error)
 				throw boost::system::system_error(error); // Some other error.
 
-			std::cout << "收到客户端时间：";
+			std::cout << "收到长度：" << std::to_string(len) << std::endl;
 
-			for (int i = 0; i < len; ++i)
+			cr.recv(buf);
+
+
+
+
+
+
+			//发送
+			system::error_code ignored_error;
+			int msgL = socket->write_some(asio::buffer("dawdawd"), ignored_error);
+
+			if (ignored_error == boost::asio::error::eof)
 			{
-				std::cout << buf[i];
-
+				BOOST_LOG_SEV(CI.slg, warning) << "远程连接断开";
+				break; // Connection closed cleanly by peer.
 			}
-			std::cout << std::endl;
+			else if (ignored_error)
+				throw boost::system::system_error(ignored_error); // Some other error.
+
+
+			std::cout << "发送长度：" << std::to_string(msgL) << std::endl;
+
+
+
+
 		}
 		catch (const std::exception& x)
 		{
