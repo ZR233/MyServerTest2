@@ -165,6 +165,11 @@ std::vector<std::string>* CSubmit::getPhNums()
 	return &num;
 }
 
+// 取短消息长度
+int CSubmit::getTextL()
+{
+	return message_length;
+}
 
 // 取短消息内容
 std::string* CSubmit::getText()

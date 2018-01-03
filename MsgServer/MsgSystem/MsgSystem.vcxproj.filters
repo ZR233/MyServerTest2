@@ -39,6 +39,21 @@
     <ClInclude Include="CRecver.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="CInitialization.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerBuf.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CBufServ.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CSender.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="CResp.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -66,6 +81,21 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="CRecver.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CInitialization.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerBuf.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CBufServ.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CSender.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="CResp.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

@@ -20,12 +20,12 @@ public:
 	unsigned int SN3();
 
 private:
-	unsigned int msg_length;
-	unsigned int cmd_ID;
+	unsigned int msg_length;//整条信息长度
+	unsigned int cmd_ID;//指令ID
 	unsigned int SN_1;
 	unsigned int SN_2;
 	unsigned int SN_3;
-	std::vector<char> head_buf;
+	std::vector<char> head_buf;//储存head buf
 	
 };
 

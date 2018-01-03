@@ -1,4 +1,7 @@
 #pragma once
+
+
+//用于生成submit buf
 class CSubmit
 {
 public:
@@ -40,6 +43,8 @@ public:
 
 	// 取发送至手机号
 	std::vector<std::string>* getPhNums();
+	// 取短消息长度
+	int getTextL();
 	// 取短消息内容
 	std::string* getText();
 	// 取手机号数量

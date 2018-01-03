@@ -29,7 +29,7 @@ inline std::basic_ostream< CharT, TraitsT >& operator<< (
 	return strm;
 }
 
-
+//初始化日志
 class CLogInit
 {
 public:

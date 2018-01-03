@@ -25,23 +25,18 @@ CLogInit::CLogInit()
 
 
 	std::string year = std::to_string(today.year());
+	std::string month = std::to_string(today.month());
+	std::string day = std::to_string(today.day());
 
-
-
+	//´´½¨Ä¿Â¼
 	if (!boost::filesystem::exists("Log"))
 	{
 		boost::filesystem::create_directories("Log");
 	}
-	if (!boost::filesystem::exists("Log/"+ year))
+	if (!boost::filesystem::exists("Log/"+ year + "-" + month + "-" + day))
 	{
-		boost::filesystem::create_directories("Log/"+ year);
+		boost::filesystem::create_directories("Log/"+ year + "-" + month + "-" + day);
 	}
-
-
-
-
-
-
 
 	// This is a simple tutorial/example of Boost.Log usage
 
@@ -52,7 +47,7 @@ CLogInit::CLogInit()
 	// One can also use lambda expressions to setup filters and formatters
 	logging::add_file_log
 	(
-		"Log/log_%Y-%m-%d_%N.log",
+		"Log/" + year + "-" + month + "-" + day + "/log_%Y-%m-%d_%s.log",
 		keywords::filter = expr::attr< severity_level >("Severity") >= warning,
 		keywords::format = expr::stream
 		<< expr::format_date_time< boost::posix_time::ptime >("TimeStamp", "%Y-%m-%d, %H:%M:%S.%f")
@@ -82,7 +77,7 @@ CLogInit::CLogInit()
 	src::logger lg;
 
 	// And output...
-	BOOST_LOG(lg) << "Hello, World!";
+	//BOOST_LOG(lg) << "Hello, World!";
 
 	// Now, let's try logging with severity
 	//src::severity_logger< severity_level > slg;
@@ -90,9 +85,9 @@ CLogInit::CLogInit()
 	// Let's pretend we also want to profile our code, so add a special timer attribute.
 	slg.add_attribute("Uptime", attrs::timer());
 
-	BOOST_LOG_SEV(slg, normal) << "A normal severity message, will not pass to the file";
-	BOOST_LOG_SEV(slg, warning) << "A warning severity message, will pass to the file";
-	BOOST_LOG_SEV(slg, error) << "An error severity message, will pass to the file";
+	//BOOST_LOG_SEV(slg, normal) << "A normal severity message, will not pass to the file";
+	//BOOST_LOG_SEV(slg, warning) << "A warning severity message, will pass to the file";
+	//BOOST_LOG_SEV(slg, error) << "An error severity message, will pass to the file";
 }
 
 
