@@ -40,7 +40,8 @@ std::vector<char>* CSubmit::Submiter(std::vector<std::string> userNum, char* msg
 	return &sub_buf;
 }
 
-
+using std::cout;
+using std::endl;
 // 接收submit
 void CSubmit::recvSubmit(std::vector<char> &buf)
 {
@@ -64,11 +65,12 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 	num.clear();
 	for (int i = 0; i < user_count; i++)
 	{
-		char temp[21];
+		char temp[21] = { 0 };
 		for (int j = 0; j < 21; j++)
 		{
 			temp[j] = buf[pt + j];
 		}
+		temp[21] = 0;
 		std::string tempstr(temp);
 		num.push_back(tempstr);
 		pt += 21;
@@ -154,8 +156,15 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 	{
 		message_content += buf[ i+ pt];
 	}
+	pt += message_length;
+	pt += 8;
 
+	cout << "pt:"<< std::to_string(pt) << endl;
 
+	if (pt != buf.size())
+	{
+		throw std::runtime_error("submit格式错误");
+	}
 }
 
 

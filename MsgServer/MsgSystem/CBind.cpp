@@ -13,15 +13,9 @@ CBind::~CBind()
 }
 std::vector<char>* CBind::Binder(char *logID, char *PassWord) 
 {
-	for (int i = 0; i < 16; i++)
-	{
-		logName[i] = '\0';
-		logPass[i] = '\0';
-	}
-	for (int i = 0; i < 8; i++)
-	{
-		reserve[i] = '\0';
-	}
+	memset(logName, sizeof(logName),'\0');
+	memset(logPass, sizeof(logPass), '\0');
+	memset(reserve, sizeof(reserve), '\0');
 	char temp;
 	bind_buf.clear();
 	memcpy(&temp, &logType, 1);
@@ -48,29 +42,23 @@ std::vector<char>* CBind::Binder(char *logID, char *PassWord)
 
 void CBind::recvBind(std::vector<char> &buf)
 {
-	for (int i = 0; i < 16; i++)
-	{
-		logName[i] = '\0';
-		logPass[i] = '\0';
-	}
-	for (int i = 0; i < 8; i++)
-	{
-		reserve[i] = '\0';
-	}
+	memset(logName, sizeof(logName), '\0');
+	memset(logPass, sizeof(logPass), '\0');
+	memset(reserve, sizeof(reserve), '\0');
+
 	int pt = 20;
 	//¿½±´µÇÂ½ÀàÐÍ
-
 	memcpy(&logType, &buf[pt], 1);
 
 	pt += 1;
 	//¿½±´ÓÃ»§Ãû
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < sizeof(logName); i++)
 	{
 		logName[i] = buf[i + pt];
 	}
 	pt += 16;
 	//¿½±´ÃÜÂë
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < sizeof(logPass); i++)
 	{
 		logPass[i] = buf[i + pt];
 	}

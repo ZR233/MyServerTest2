@@ -113,11 +113,20 @@ std::vector<char> CRecver::recv(std::vector<char> &buf)
 			}
 			return resp;
 		}
+		
 		cs.recvSubmit(buf);
+		
 		std::cout << "--------------" << std::endl;
 		std::cout << "收到submit请求" << std::endl;
 		std::cout << "发送至手机号：" << std::endl;
-		temp_vec = *cs.getPhNums();
+		if (cs.getPhNums()->size() != 0)
+		{
+			temp_vec = *cs.getPhNums();
+		}
+		else
+		{
+			throw std::runtime_error("没有发送手机号");
+		}
 
 		if (temp_vec.size() > 0)
 		{
@@ -138,7 +147,6 @@ std::vector<char> CRecver::recv(std::vector<char> &buf)
 		std::cout << "收到手机数量：" <<std::to_string(cs.getUserCount())<< std::endl;
 		std::cout << "收到企业代码：" << cs.getCorpId() << std::endl;
 		std::cout << "收到消息：" << *cs.getText() << std::endl;
-
 
 		request_from_client.msgL = cs.getTextL();
 		request_from_client.msg = *cs.getText();

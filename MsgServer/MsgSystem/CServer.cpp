@@ -5,6 +5,8 @@
 #include "CInitialization.h"
 #include "ServerBuf.h"
 
+using std::cout;
+using std::endl;
 CServer::CServer()
 {
 	
@@ -30,35 +32,49 @@ using boost::asio::ip::tcp;
 // 开启服务器
 void CServer::run()
 {
-	BOOST_LOG_SEV(CI.slg, warning) << "服务器启动";
-	asio::io_service io_service;
-	tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), local_port));
-	boost::thread_group tg;
-	tg.create_thread(boost::bind(&CServer::seeMsgs, this));
 	while (true)
 	{
 		try
 		{
+			BOOST_LOG_SEV(CI.slg, warning) << "服务器启动";
+			asio::io_service io_service;
+			tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), local_port));
+			boost::thread_group tg;
+			tg.create_thread(boost::bind(&CServer::seeMsgs, this));
+			while (true)
+			{
+				try
+				{
+					shared_ptr<tcp::socket> socket(new tcp::socket(io_service));
+					acceptor.accept(*socket);
 
-			shared_ptr<tcp::socket> socket(new tcp::socket(io_service));
-			acceptor.accept(*socket);
+					tg.create_thread(boost::bind(&CServer::DealSockProcess, this, socket));
+					BOOST_LOG_SEV(CI.slg, warning) << "客户端连接" << socket->remote_endpoint().address();
+				}
 
-			tg.create_thread(boost::bind(&CServer::DealSockProcess, this, socket));
-			BOOST_LOG_SEV(CI.slg, warning) << "客户端连接"<<socket->remote_endpoint().address();
+				catch (std::exception& e)
+				{
+					std::cerr << e.what() << std::endl;
+					BOOST_LOG_SEV(CI.slg, warning) << e.what();
+					break;
+				}
+			}
+			tg.join_all();
 		}
-
-		catch (std::exception& e)
+		catch (const std::exception& k)
 		{
-			std::cerr << e.what() << std::endl;
-			BOOST_LOG_SEV(CI.slg, warning) << e.what();
+			cout << k.what()<< endl;
+			BOOST_LOG_SEV(CI.slg, warning) << k.what();
 		}
+		
 	}
-	tg.join_all();
+	
 
 }
 
 using namespace boost;
 using boost::asio::ip::tcp;
+
 void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> socket)
 {
 	CRecver cr;
@@ -66,12 +82,11 @@ void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> so
 	{
 		try
 		{
-			//std::string message = to_simple_string(boost::gregorian::day_clock::local_day());
-			//接收----------------------------------------------
-			std::vector<char> buf(1000, 0);
+			//接收----------------------------------------------			
+			std::vector<char> buf(2000, 0);
 			boost::system::error_code error;
 			size_t len = socket->read_some(boost::asio::buffer(buf), error);
-
+			buf.erase(buf.begin()+len, buf.end());
 			if (error == boost::asio::error::eof)
 				break; // 连接被对方断开
 			else if (error)
@@ -79,10 +94,11 @@ void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> so
 				throw boost::system::system_error(error); // Some other error.
 				break;
 			}
-				
 			std::cout << "收到长度：" << std::to_string(len) << std::endl;
-
+		
 			std::vector<char> temp_re_vec = cr.recv(buf);//处理接收
+		
+			
 			//发送---------------------------------------------------------
 			system::error_code ignored_error;
 			int msgL = socket->write_some(asio::buffer(temp_re_vec), ignored_error);
@@ -104,6 +120,7 @@ void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> so
 		{
 			std::cerr << x.what() << std::endl;
 			BOOST_LOG_SEV(CI.slg, warning) << x.what();
+			socket->close();
 			break;
 		}
 
