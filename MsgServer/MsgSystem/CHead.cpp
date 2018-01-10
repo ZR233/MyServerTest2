@@ -139,3 +139,7 @@ unsigned int CHead::SN3()
 {
 	return SN_3;
 }
+std::vector<char>* CHead::getBuf()
+{
+	return &head_buf;
+}

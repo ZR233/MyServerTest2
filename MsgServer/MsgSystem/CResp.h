@@ -8,6 +8,7 @@ public:
 	~CResp();
 	// 生成应答   0：接收成功
 	std::vector<char> resp(int result);
+	int recvResp(std::vector<char> &buf);
 private:
 	std::vector<char> resp_buf;
 	unsigned char re_char;

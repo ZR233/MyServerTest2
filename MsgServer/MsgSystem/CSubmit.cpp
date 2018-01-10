@@ -32,11 +32,117 @@ CSubmit::~CSubmit()
 
 
 // 生成submit buf
-std::vector<char>* CSubmit::Submiter(std::vector<std::string> userNum, char* msg, int msg_size)
+std::vector<char>* CSubmit::Submiter(std::vector<std::string> &userNum, std::string &msg)
 {
+	int pt = 20;
+	sub_buf.clear();
+	//拷贝SP接入号 
+	for (int i = 0; i < sizeof(SP_number); i++)
+	{
+		sub_buf.push_back(SP_number[i]);
+	}
+	pt += 21;
 
+	//拷贝付费号码
+	for (int i = 0; i < sizeof(charge_number[i]); i++)
+	{
+		sub_buf.push_back(charge_number[i]);
+	}
+	pt += 21;
+	//拷贝接收短消息的手机号数量
+	sub_buf.push_back((unsigned char)user_count);
+	pt += 1;
+	//拷贝接收短消息的手机号
+	for (int i = 0; i < user_count; i++)
+	{
+		std::vector<char> temp_ph;
+		temp_ph.assign(userNum[i].begin(), userNum[i].end());
+		temp_ph.resize(21);
+		sub_buf.insert(sub_buf.end(),temp_ph.begin(),temp_ph.end());
+		pt += 21;
+	}
+	//拷贝企业代码
+	for (int i = 0; i < 5; i++)
+	{
+		sub_buf.push_back(corp_Id[i]);
+	}
+	pt += 5;
+	//拷贝业务代码，由SP定义
+	for (int i = 0; i < 10; i++)
+	{
+		sub_buf.push_back(service_type[i]);
+	}
+	pt += 10;
 
+	//拷贝计费类型
+	sub_buf.push_back((unsigned char)fee_type);
+	pt += 1;
 
+	//拷贝取值范围0-99999，该条短消息的收费值，单位为分，由SP定义
+	for (int i = 0; i < 6; i++)
+	{
+		sub_buf.push_back(fee_value[i]);
+	}
+	pt += 6;
+	//拷贝取值范围0-99999，赠送用户的话费，单位为分，由SP定义，特指由SP向用户发送广告时的赠送话费
+	for (int i = 0; i < 6; i++)
+	{
+		sub_buf.push_back(given_value[i]);
+	}
+	pt += 6;
+
+	//拷贝
+	sub_buf.push_back((unsigned char)agent_flag);
+	pt += 1;
+	//拷贝
+	sub_buf.push_back((unsigned char)morelateto_MT_flag);
+	pt += 1;
+	//拷贝
+	sub_buf.push_back((unsigned char)priority);
+	pt += 1;
+	//拷贝
+	for (int i = 0; i < 16; i++)
+	{
+		sub_buf.push_back(expire_time[i]);
+	}
+	pt += 16;
+	//拷贝
+	for (int i = 0; i < 16; i++)
+	{
+		sub_buf.push_back(schedule_time[i]);
+	}
+	pt += 16;
+	//拷贝
+	sub_buf.push_back((unsigned char)report_flag);
+	pt += 1;
+	//拷贝
+	sub_buf.push_back((unsigned char)TP_pid) ;
+	pt += 1;
+	//拷贝
+	sub_buf.push_back((unsigned char)TP_udhi);
+	pt += 1;
+	//拷贝
+	sub_buf.push_back((unsigned char)message_coding);
+	pt += 1;
+	//拷贝
+	sub_buf.push_back((unsigned char)message_type);
+	pt += 1;
+	//拷贝短信内容长度
+	char temp_char_message_length[4];
+	unsigned int temp_ml = htonl(msg.size() + 1);
+	memcpy(temp_char_message_length, &temp_ml, 4);
+	sub_buf.insert(sub_buf.end(), &temp_char_message_length[0], &temp_char_message_length[4]);
+	pt += 4;
+	//拷贝短信内容
+	sub_buf.insert(sub_buf.end(), msg.begin(), msg.end());
+	for (size_t i = 0; i < 9; i++)
+	{
+		sub_buf.push_back(0);
+	}
+	pt += (msg.size()+1);
+	pt += 8;
+
+	std::cout << "pt:" << std::to_string(pt) << std::endl;
 	return &sub_buf;
 }
 

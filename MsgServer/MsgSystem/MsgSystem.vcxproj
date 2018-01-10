@@ -157,6 +157,7 @@
   <ItemGroup>
     <ClInclude Include="CBind.h" />
     <ClInclude Include="CBufServ.h" />
+    <ClInclude Include="CClient.h" />
     <ClInclude Include="CInitialization.h" />
     <ClInclude Include="CLogInit.h" />
     <ClInclude Include="CRecver.h" />
@@ -172,6 +173,7 @@
   <ItemGroup>
     <ClCompile Include="CBind.cpp" />
     <ClCompile Include="CBufServ.cpp" />
+    <ClCompile Include="CClient.cpp" />
     <ClCompile Include="CInitialization.cpp" />
     <ClCompile Include="CLogInit.cpp" />
     <ClCompile Include="CRecver.cpp" />

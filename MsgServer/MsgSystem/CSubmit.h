@@ -32,11 +32,11 @@ private:
 	std::string message_content;
 
 
-	std::vector<char> sub_buf;
+	std::vector<char> sub_buf;//submit发送缓存
 	std::vector<std::string> num;//手机号vector
 public:
 	// 生成submit buf
-	std::vector<char>* Submiter(std::vector<std::string> userNum, char* msg, int msg_size);
+	std::vector<char>* Submiter(std::vector<std::string> &userNum, std::string &msg);
 	// 接收submit
 	void recvSubmit(std::vector<char> &buf);
 

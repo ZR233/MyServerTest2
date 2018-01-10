@@ -40,6 +40,33 @@ std::vector<char>* CBind::Binder(char *logID, char *PassWord)
 
 }
 
+std::vector<char>* CBind::Binder(std::string &logID, std::string &PassWord)
+{
+	memset(logName, sizeof(logName), '\0');
+	memset(logPass, sizeof(logPass), '\0');
+	memset(reserve, sizeof(reserve), '\0');
+	if ((logID.size() >16) || (PassWord.size() >16))
+	{
+		throw std::runtime_error("bind时用户名密码过长");
+	}
+	char temp;
+	bind_buf.clear();
+	memcpy(&temp, &logType, 1);
+
+	bind_buf.push_back(temp);
+	logID.resize(16);
+	bind_buf.insert(bind_buf.end(), logID.begin(), logID.end());
+	PassWord.resize(16);
+	bind_buf.insert(bind_buf.end(), PassWord.begin(), PassWord.end());
+
+	for (int i = 0; i < 8; i++)
+	{
+		bind_buf.push_back('\0');
+	}
+	std::cout << "bind.cpp bind_buf:" << std::to_string(bind_buf.size()) << std::endl;
+	return &bind_buf;
+
+}
 void CBind::recvBind(std::vector<char> &buf)
 {
 	memset(logName, sizeof(logName), '\0');
@@ -84,4 +111,9 @@ char* CBind::getPass()
 int CBind::getType()
 {
 	return logType;
+}
+
+std::vector<char>* CBind::getBuf()
+{
+	return &bind_buf;
 }

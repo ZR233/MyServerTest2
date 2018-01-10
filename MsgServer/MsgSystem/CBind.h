@@ -6,6 +6,7 @@ public:
 	~CBind();
 	// 制作Bind
 	std::vector<char>* Binder(char *logID, char *PassWord);
+	std::vector<char>* Binder(std::string &logID, std::string &PassWord);
 	// 解析Bind
 	void recvBind(std::vector<char> &buf);
 
@@ -24,5 +25,6 @@ public:
 	char* getPass();
 	// 取登录类型。
 	int getType();
+	std::vector<char>* getBuf();
 };
 

@@ -18,7 +18,8 @@ public:
 	unsigned int SN2();
 	// SN3
 	unsigned int SN3();
-
+	//取缓存
+	std::vector<char>* getBuf();
 private:
 	unsigned int msg_length;//整条信息长度
 	unsigned int cmd_ID;//指令ID

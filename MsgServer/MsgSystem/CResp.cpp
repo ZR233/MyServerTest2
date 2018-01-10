@@ -24,3 +24,9 @@ std::vector<char> CResp::resp(int result)
 	}
 	return resp_buf;
 }
+int CResp::recvResp(std::vector<char> &buf)
+{
+	unsigned int reslut;
+	reslut = (unsigned int)(buf[20]);
+	return reslut;
+}
