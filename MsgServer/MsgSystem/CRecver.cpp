@@ -41,6 +41,7 @@ std::vector<char> CRecver::recv(std::vector<char> &buf)
 		std::cout << "指令ID:" << std::to_string(ch.cmdID()) << std::endl;
 		std::cout << "SN1:" << std::to_string(ch.SN1()) << std::endl;
 		std::cout << "SN2:" << std::to_string(ch.SN2()) << std::endl;
+		std::cout << "SN3:" << std::to_string(ch.SN3()) << std::endl;
 		std::cout << "指令号:" << std::to_string(cb.getType()) << std::endl;
 		std::cout << "用户名:" << cb.getName() << std::endl;
 		std::cout << "密码:" << cb.getPass() << std::endl;

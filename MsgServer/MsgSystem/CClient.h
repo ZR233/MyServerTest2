@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
 
+
+
 #ifndef _ADD_CAL_H_  
 #define _ADD_CAL_H_  
 
@@ -13,6 +15,7 @@
 //服务器程序入口
 class EXPORT_DLL CClient
 {
+
 public:
 	CClient();
 	~CClient();
@@ -33,7 +36,17 @@ private:
 	int spID;
 	//std::string logID;//用户名
 	//std::string password;//密码
+	typedef boost::asio::ip::tcp::endpoint endpoint_type;
+	typedef boost::asio::ip::tcp::socket socket_type;
+	typedef boost::asio::ip::address address_type;
+
+	boost::asio::io_service io_service;
+	socket_type *socket/* = socket_type(io_service)*/;
+	endpoint_type ep;
 };
+
+
+
 
 #undef EXPORT_DLL  
 
