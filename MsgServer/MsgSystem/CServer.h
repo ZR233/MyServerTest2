@@ -20,7 +20,9 @@ public:
 	~CServer();
 	void setPort();
 	// 开启服务器
-	void run();
+	void start();
+	//开启监听
+	void runLis();
 	// 处理socket的线程
 	void DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> socket);
 private:

@@ -16,7 +16,6 @@ CServer::CServer()
 
 }
 
-
 CServer::~CServer()
 {
 }
@@ -29,47 +28,51 @@ void CServer::setPort()
 
 using namespace boost;
 using boost::asio::ip::tcp;
-// 开启服务器
-void CServer::run()
+
+void CServer::start()
 {
-	while (true)
+	thread lis(bind(&CServer::runLis, this));
+	thread see_msg(bind(&CServer::seeMsgs, this));
+
+	lis.join();
+	see_msg.join();
+
+}
+// 开启服务器
+void CServer::runLis()
+{
+	try
 	{
-		try
+		BOOST_LOG_SEV(CI.slg, warning) << "服务器开始监听";
+		asio::io_service io_service;
+		tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), local_port));
+		boost::thread_group tg;
+		//tg.create_thread(boost::bind(&CServer::seeMsgs, this));
+		while (true)
 		{
-			BOOST_LOG_SEV(CI.slg, warning) << "服务器启动";
-			asio::io_service io_service;
-			tcp::acceptor acceptor(io_service, tcp::endpoint(tcp::v4(), local_port));
-			boost::thread_group tg;
-			tg.create_thread(boost::bind(&CServer::seeMsgs, this));
-			while (true)
+			try
 			{
-				try
-				{
-					shared_ptr<tcp::socket> socket(new tcp::socket(io_service));
-					acceptor.accept(*socket);
+				shared_ptr<tcp::socket> socket(new tcp::socket(io_service));
+				acceptor.accept(*socket);
 
-					tg.create_thread(boost::bind(&CServer::DealSockProcess, this, socket));
-					BOOST_LOG_SEV(CI.slg, warning) << "客户端连接" << socket->remote_endpoint().address();
-				}
-
-				catch (std::exception& e)
-				{
-					std::cerr << e.what() << std::endl;
-					BOOST_LOG_SEV(CI.slg, warning) << e.what();
-					break;
-				}
+				tg.create_thread(boost::bind(&CServer::DealSockProcess, this, socket));
+				BOOST_LOG_SEV(CI.slg, warning) << "客户端连接" << socket->remote_endpoint().address();
 			}
-			tg.join_all();
-		}
-		catch (const std::exception& k)
-		{
-			cout << k.what()<< endl;
-			BOOST_LOG_SEV(CI.slg, warning) << k.what();
-		}
-		
-	}
-	
 
+			catch (std::exception& e)
+			{
+				std::cerr << e.what() << std::endl;
+				BOOST_LOG_SEV(CI.slg, warning) << e.what();
+				break;
+			}
+		}
+		tg.join_all();
+	}
+	catch (const std::exception& k)
+	{
+		cout << k.what()<< endl;
+		BOOST_LOG_SEV(CI.slg, warning) << k.what();
+	}
 }
 
 using namespace boost;
