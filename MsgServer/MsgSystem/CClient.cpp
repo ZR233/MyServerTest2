@@ -3,6 +3,7 @@
 #include "CHead.h"
 #include "CBind.h"
 #include "CResp.h"
+#include "CSubmit.h"
 
 CClient::CClient()
 {
@@ -115,7 +116,40 @@ int CClient::unBind()
 	} 
 	return 0;
 }
+int CClient::submit(std::vector<std::string> &userNum, std::string &msg)
+{
+	CHead chd;
+	CSubmit cs;
+	CResp cr;
+	cs.Submiter(userNum, msg);
 
+	std::vector<char> buf;
+
+	chd.header(cs.getBuf()->size() + 20, 3, spID, count);
+
+	buf.assign(chd.getBuf()->begin(), chd.getBuf()->end());
+	buf.insert(buf.end(), cs.getBuf()->begin(), cs.getBuf()->end());
+
+	socket->write_some(boost::asio::buffer(buf));
+
+
+	buf.clear();
+	buf.resize(2000);
+	size_t len = socket->read_some(boost::asio::buffer(buf));
+
+	buf.resize(len);
+	chd.recvHead(buf);
+
+	if (count>99999)
+	{
+		count = 0;
+	}
+	++count;
+
+	return cr.recvResp(buf);
+
+
+}
 
 
 void CClient::setIp(std::string &ip)

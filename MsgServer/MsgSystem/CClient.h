@@ -28,6 +28,10 @@ public:
 	void setPort(int port);
 	//void setLogID(std::string &logID);
 	//void setPassword(std::string &password);
+	
+	//发送信息
+	int submit(std::vector<std::string> &userNum, std::string &msg);
+	//断开连接
 	int unBind();
 private:
 	int count;//指令ID计数

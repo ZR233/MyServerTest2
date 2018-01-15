@@ -51,5 +51,7 @@ public:
 	int getUserCount();
 	// 得到企业代码
 	std::string getCorpId();
+
+	std::vector<char>* getBuf();
 };
 

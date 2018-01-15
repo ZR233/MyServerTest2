@@ -5,7 +5,8 @@
 CSubmit::CSubmit()
 {
 	strcpy_s(SP_number, "3053112345");
-	memcpy(charge_number, "000000000000000000000", 21);
+	memset(charge_number, '0', 21);
+
 	user_count = 0;
 	memcpy(corp_Id, "12345", 5);
 	strcpy_s(service_type, "23333");
@@ -44,16 +45,17 @@ std::vector<char>* CSubmit::Submiter(std::vector<std::string> &userNum, std::str
 	pt += 21;
 
 	//拷贝付费号码
-	for (int i = 0; i < sizeof(charge_number[i]); i++)
+	for (int i = 0; i < sizeof(charge_number); i++)
 	{
 		sub_buf.push_back(charge_number[i]);
 	}
 	pt += 21;
 	//拷贝接收短消息的手机号数量
+	user_count = userNum.size();
 	sub_buf.push_back((unsigned char)user_count);
 	pt += 1;
 	//拷贝接收短消息的手机号
-	for (int i = 0; i < user_count; i++)
+	for (int i = 0; i < userNum.size(); i++)
 	{
 		std::vector<char> temp_ph;
 		temp_ph.assign(userNum[i].begin(), userNum[i].end());
@@ -135,6 +137,8 @@ std::vector<char>* CSubmit::Submiter(std::vector<std::string> &userNum, std::str
 	pt += 4;
 	//拷贝短信内容
 	sub_buf.insert(sub_buf.end(), msg.begin(), msg.end());
+
+
 	for (size_t i = 0; i < 9; i++)
 	{
 		sub_buf.push_back(0);
@@ -142,7 +146,7 @@ std::vector<char>* CSubmit::Submiter(std::vector<std::string> &userNum, std::str
 	pt += (msg.size()+1);
 	pt += 8;
 
-	std::cout << "pt:" << std::to_string(pt) << std::endl;
+
 	return &sub_buf;
 }
 
@@ -151,7 +155,12 @@ using std::endl;
 // 接收submit
 void CSubmit::recvSubmit(std::vector<char> &buf)
 {
+	if (buf.size() < (20+ sizeof(SP_number) + sizeof(charge_number) + 1 ))
+	{
+		throw std::runtime_error("submit 消息长度错误");
+	}
 	int pt = 20;
+
 	//拷贝SP接入号 
 	for (int i = 0; i < 21; i++)
 	{
@@ -165,9 +174,12 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 		charge_number[i] = buf[i + pt];
 	}
 	pt += 21;
+
 	//拷贝接收短消息的手机号
 	user_count = (unsigned int)buf[pt];
 	pt += 1;
+
+
 	num.clear();
 	for (int i = 0; i < user_count; i++)
 	{
@@ -175,12 +187,14 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 		for (int j = 0; j < 21; j++)
 		{
 			temp[j] = buf[pt + j];
+
 		}
-		temp[21] = 0;
+		temp[20] = 0;
 		std::string tempstr(temp);
 		num.push_back(tempstr);
 		pt += 21;
 	}
+
 	//拷贝企业代码
 	for (int i = 0; i < 5; i++)
 	{
@@ -235,18 +249,23 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 	//拷贝
 	report_flag = (unsigned int)buf[pt];
 	pt += 1;
+
 	//拷贝
 	TP_pid = (unsigned int)buf[pt];
 	pt += 1;
+
 	//拷贝
 	TP_udhi = (unsigned int)buf[pt];
 	pt += 1;
+
 	//拷贝
 	message_coding = (unsigned int)buf[pt];
 	pt += 1;
+
 	//拷贝
 	message_type = (unsigned int)buf[pt];
 	pt += 1;
+
 	//拷贝
 	char temp_char_message_length[4];
 	for (int i = 0; i < 4; i++)
@@ -256,6 +275,7 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 	memcpy(&message_length, temp_char_message_length, 4);
 	message_length = ntohl(message_length);
 	pt += 4;
+
 	//拷贝
 	message_content.clear();
 	for (int i = 0; i < message_length; i++)
@@ -265,12 +285,12 @@ void CSubmit::recvSubmit(std::vector<char> &buf)
 	pt += message_length;
 	pt += 8;
 
-	cout << "pt:"<< std::to_string(pt) << endl;
 
-	if (pt != buf.size())
-	{
-		throw std::runtime_error("submit格式错误");
-	}
+
+	//if (pt != buf.size())
+	//{
+	//	throw std::runtime_error("submit格式错误");
+	//}
 }
 
 
@@ -310,4 +330,8 @@ std::string CSubmit::getCorpId()
 	std::string temp_string(temp_char);
 
 	return temp_string;
+}
+std::vector<char>* CSubmit::getBuf()
+{
+	return &sub_buf;
 }

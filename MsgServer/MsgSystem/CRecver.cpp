@@ -25,6 +25,7 @@ std::vector<char> CRecver::recv(std::vector<char> &buf)
 	CResp cr;
 	boost::mutex mu;
 	ch.recvHead(buf);
+
 	std::vector<std::string> temp_vec;
 	std::vector<char> resp;
 	for (int i = 0; i < 20; i++)
@@ -114,7 +115,7 @@ std::vector<char> CRecver::recv(std::vector<char> &buf)
 			}
 			return resp;
 		}
-		
+
 		cs.recvSubmit(buf);
 		
 		std::cout << "--------------" << std::endl;

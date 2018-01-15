@@ -95,7 +95,8 @@ void CServer::DealSockProcess(boost::shared_ptr<boost::asio::ip::tcp::socket> so
 				break;
 			}
 			std::cout << "收到长度：" << std::to_string(len) << std::endl;
-		
+			
+			buf.resize(len);
 			std::vector<char> temp_re_vec = cr.recv(buf);//处理接收
 		
 			
